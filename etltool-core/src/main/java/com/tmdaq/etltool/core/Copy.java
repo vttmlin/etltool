@@ -7,7 +7,7 @@ import java.util.Map;
 
 /**
  * @author vttmlin
- */
+ * */
 public class Copy<SRC, DEST> {
     private Configuration configuration;
 
@@ -22,30 +22,18 @@ public class Copy<SRC, DEST> {
             String src1 = field.getSrc();
             Object value = null;
             if (src instanceof Map) {
+                value = ((Map) src).get(src1);
                 if (((Map) src).get(src1) != null) {
-                    if (field.getTypeHandle() != null && !"".equals(field.getTypeHandle())) {
-                        TypeHandler typeHandler = configuration.getTypeHandler(field.getTypeHandle());
-                        if (typeHandler != null) {
-                            value = typeHandler.convert(((Map) src).get(src));
-                        }
-                    } else {
-                        value = ((Map) src).get(src);
-                    }
+                    value = getObject(field, value);
                 } else {
                     continue;
                 }
             } else if (src.getClass().getAnnotation(Etl.class) != null) {
                 java.lang.reflect.Field srcField = src.getClass().getDeclaredField(field.getSrc());
                 srcField.setAccessible(true);
-                if (srcField.get(src) != null) {
-                    if (field.getTypeHandle() != null && !"".equals(field.getTypeHandle())) {
-                        TypeHandler typeHandler = configuration.getTypeHandler(field.getTypeHandle());
-                        if (typeHandler != null) {
-                            value = typeHandler.convert(srcField.get(src));
-                        }
-                    } else {
-                        value = srcField.get(src);
-                    }
+                value = srcField.get(src);
+                if (value != null) {
+                    value = getObject(field, value);
                 } else {
                     continue;
                 }
@@ -54,5 +42,15 @@ public class Copy<SRC, DEST> {
             destField.set(dest, value);
         }
         return dest;
+    }
+
+    private Object getObject(Field field, Object value) {
+        if (field.getTypeHandle() != null && !"".equals(field.getTypeHandle())) {
+            TypeHandler typeHandler = configuration.getTypeHandler(field.getTypeHandle());
+            if (typeHandler != null) {
+                value = typeHandler.convert(value);
+            }
+        }
+        return value;
     }
 }
