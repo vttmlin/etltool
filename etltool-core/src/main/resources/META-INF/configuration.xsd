@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://www.tmdaq.com/schema/etltool/0.0.1"
+            targetNamespace="http://www.tmdaq.com/schema/etltool/0.0.1" elementFormDefault="qualified">
+
+    <xsd:element name="configuration">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="typeAliases" minOccurs="0">
+                    <xsd:annotation>
+                        <xsd:documentation>定义别名,方便field元素引用,但是使用[typeHandle]之后自动失效</xsd:documentation>
+                    </xsd:annotation>
+                    <xsd:complexType mixed="true">
+                        <xsd:sequence>
+                            <xsd:element name="typeAlias" type="typeAliasType" maxOccurs="unbounded"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="converts">
+                    <xsd:complexType mixed="true">
+                        <xsd:sequence>
+                            <xsd:element name="convert" type="convertType" maxOccurs="unbounded"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:complexType name="convertType">
+        <xsd:sequence>
+            <xsd:choice maxOccurs="unbounded">
+                <xsd:element name="field" type="fieldTypeWithType" maxOccurs="unbounded" minOccurs="0"/>
+                <xsd:element name="fieldRef" type="fieldTypeWithRef" maxOccurs="unbounded" minOccurs="0"/>
+            </xsd:choice>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:string" use="required"/>
+        <xsd:attribute name="auto" type="xsd:boolean" default="true"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="fieldTypeWithType" mixed="true">
+        <xsd:attribute name="src" type="xsd:string"/>
+        <xsd:attribute name="dest" type="xsd:string"/>
+        <xsd:attribute name="typeHandle" type="xsd:string"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="fieldTypeWithRef" mixed="true">
+        <xsd:attribute name="src" type="xsd:string"/>
+        <xsd:attribute name="dest" type="xsd:string"/>
+        <xsd:attribute name="ref" type="xsd:string"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="typeAliasType">
+        <xsd:attribute name="alias" type="xsd:string" id="alias"/>
+        <xsd:attribute name="type" type="xsd:string"/>
+    </xsd:complexType>
+
+</xsd:schema>
