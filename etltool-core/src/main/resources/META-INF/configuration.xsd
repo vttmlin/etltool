@@ -6,6 +6,17 @@
     <xsd:element name="configuration">
         <xsd:complexType>
             <xsd:sequence>
+                <xsd:element name="jsonExecutor" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:enumeration value="FASTJSON"/>
+                            <xsd:enumeration value="JSON"/>
+                            <xsd:enumeration value="JSONLIB"/>
+                            <xsd:enumeration value="JACKSON"/>
+                            <xsd:enumeration value="GSON"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
                 <xsd:element name="typeAliases" minOccurs="0">
                     <xsd:annotation>
                         <xsd:documentation>定义别名,方便field元素引用,但是使用[typeHandle]之后自动失效</xsd:documentation>

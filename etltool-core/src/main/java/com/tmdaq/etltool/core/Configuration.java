@@ -24,6 +24,7 @@ import java.util.Map;
  * @author vttmlin
  */
 public class Configuration {
+    private Class jsonExecutor = null;
     private Map<String, TypeHandler> typeHandlerMap = new HashMap<>();
     private Map<String, TypeHandler> typeAliases = new HashMap<>();
     private Map<String, Convert> map = new HashMap<>();
@@ -47,9 +48,39 @@ public class Configuration {
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
+        parseExecutor(getNode("/configuration/jsonExecutor"));
         parseTypeAliases(getNode("/configuration/typeAliases"));
         parseConverts(getNode("/configuration/converts"));
         return this;
+    }
+
+    private void parseExecutor(Node node) {
+        if (node != null) {
+            if (node.getNodeName() != null && "jsonExecutor".equalsIgnoreCase(node.getNodeName()) && node.getTextContent() != null) {
+                try {
+                    switch (node.getTextContent().toUpperCase()) {
+                        case "FASTJSON":
+                            jsonExecutor = Class.forName("com.tmdaq.etltool.json.wapper.FastJsonWapper");
+                            break;
+                        case "JSON":
+                            jsonExecutor = Class.forName("com.tmdaq.etltool.json.wapper.JsonWapper");
+                            break;
+                        case "JSONLIB":
+                            jsonExecutor = Class.forName("com.tmdaq.etltool.json.wapper.JsonLibWapper");
+                            break;
+                        case "JACKSON":
+                            jsonExecutor = Class.forName("com.tmdaq.etltool.json.wapper.JackSonWapper");
+                            break;
+                        case "GSON":
+                            jsonExecutor = Class.forName("com.tmdaq.etltool.json.wapper.GsonWapper");
+                            break;
+                        default:
+                            break;
+                    }
+                } catch (ClassNotFoundException e) {
+                }
+            }
+        }
     }
 
     /**
@@ -142,5 +173,9 @@ public class Configuration {
             }
         }
         return typeHandlerMap.get(className);
+    }
+
+    public Class getJsonExecutor() {
+        return jsonExecutor;
     }
 }

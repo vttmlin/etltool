@@ -7,15 +7,15 @@ import java.util.Map;
 
 /**
  * @author vttmlin
- * */
-public class Copy<SRC, DEST> {
+ */
+public class Copy {
     private Configuration configuration;
 
     public Copy(Configuration configuration) {
         this.configuration = configuration;
     }
 
-    public DEST copy(SRC src, DEST dest, String convertId) throws NoSuchFieldException, IllegalAccessException {
+    public <T> T copy(Object src, Object dest, String convertId) throws NoSuchFieldException, IllegalAccessException {
         Convert convert = configuration.getMap().get(convertId);
         for (Field field : convert.getFieldList()) {
             java.lang.reflect.Field destField = dest.getClass().getDeclaredField(field.getDest());
@@ -41,7 +41,7 @@ public class Copy<SRC, DEST> {
             destField.setAccessible(true);
             destField.set(dest, value);
         }
-        return dest;
+        return (T) dest;
     }
 
     private Object getObject(Field field, Object value) {
