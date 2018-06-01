@@ -15,6 +15,13 @@ public class Copy {
         this.configuration = configuration;
     }
 
+    /**
+     * 操作的核心方法
+     *
+     * @param src       复制的源 目前支持map object 两大类型
+     * @param dest      目标类
+     * @param convertId 配置文件中的id
+     */
     public <T> T copy(Object src, Object dest, String convertId) throws NoSuchFieldException, IllegalAccessException {
         Convert convert = configuration.getMap().get(convertId);
         for (Field field : convert.getFieldList()) {
