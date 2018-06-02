@@ -3,7 +3,9 @@ package com.tmdaq.etltool.json.wapper;
 import com.google.gson.Gson;
 import com.tmdaq.etltool.core.Configuration;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,4 +25,14 @@ public class GsonWapper extends Json {
         }
         return gson.fromJson(json, Map.class);
     }
+
+    @Override
+    List readValueFromList(String json) {
+        if (json == null || "".equals(json)) {
+            return new ArrayList();
+        }
+        return gson.fromJson(json, List.class);
+    }
+
+
 }

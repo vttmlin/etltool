@@ -3,6 +3,8 @@ package com.tmdaq.etltool.core;
 import com.tmdaq.etltool.annotation.Etl;
 import com.tmdaq.etltool.handler.TypeHandler;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,6 +51,25 @@ public class Copy {
             destField.set(dest, value);
         }
         return (T) dest;
+    }
+
+    public <T> List<T> copy(List<Object> src, List<T> dest, final String convertId) throws NoSuchFieldException, IllegalAccessException {
+        if (src != null && src.size() > 0 && dest != null && dest.size() > 0 && src.size() == dest.size()) {
+            for (int i = 0; i < src.size(); i++) {
+                copy(src.get(i), dest.get(i), convertId);
+            }
+        }
+        return dest;
+    }
+
+    public <T> List<T> copy(List<Object> src, Class<T> dest, final String convertId) throws NoSuchFieldException, IllegalAccessException, InstantiationException {
+        List<Object> list = new ArrayList<>();
+        if (src != null && src.size() > 0 && dest != null) {
+            for (int i = 0; i < src.size(); i++) {
+                list.add(copy(src.get(i), dest.newInstance(), convertId));
+            }
+        }
+        return (List<T>) list;
     }
 
     private Object getObject(Field field, Object value) {

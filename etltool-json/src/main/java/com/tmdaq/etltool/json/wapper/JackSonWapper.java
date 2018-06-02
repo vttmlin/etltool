@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tmdaq.etltool.core.Configuration;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,14 +21,27 @@ public class JackSonWapper extends Json {
 
     @Override
     Map readValue(String json) {
-        try {
-            if (json == null || "".equals(json)) {
-                return new HashMap<>(0);
+        if (json != null && !"".equals(json)) {
+            try {
+                return holder.readValue(json, Map.class);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            return holder.readValue(json, Map.class);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return new HashMap<>(0);
     }
+
+    @Override
+    List readValueFromList(String json) {
+        if (json != null && !"".equals(json)) {
+            try {
+                return holder.readValue(json, List.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return new ArrayList();
+    }
+
+
 }
